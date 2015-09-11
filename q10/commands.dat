@@ -1,0 +1,1 @@
+ls -Sl /home/hyades/* | grep -v / | head -10 > Documents/a575/q10_b_hyades.dat

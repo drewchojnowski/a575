@@ -1,0 +1,7 @@
+# print the number of data lines in the linelist
+
+[drewski@alphaboo q12]$ grep -v "#" linelist | wc -l
+108032
+
+# print every 100th line the linelist (haven't figured out how to preserve headers)
+awk '!(NR%100)' linelist

@@ -1,9 +1,8 @@
-\documentclass[preprint2]{aastex}
-
-\shorttitle{Mrk 266}
-\shortauthors{Chojnowski}
+\documentclass{article}
+\usepackage{graphicx}
 
 \begin{document}
+\bibliographystyle{plain}
 
 \title{Spectroscopy of Magnetic B Emission Stars}
 
@@ -15,24 +14,23 @@
 %% As in the title, use \\ to force line breaks.
 
 \author{S. Drew Chojnowski}
-\affil{Astronomy Department, New Mexico State University}
 
 \vspace{0.5cm}
 
 \section{Background}
 
-Blablabla said \citet{wis15}.
+Wisniewski et al.~\cite{wis15} presented results from optical spectroscopy of two $\sigma$ Ori E type stars discovered during the SDSS-III/APOGEE survey. $\sigma$ Ori E stars are a rare group of B stars with strong, variable magnetic fields, and weak, broad emission in the hydrogen lines. The emission is explained via the Rigidly Rotating Magnetosphere model, whereby the stellar winds are trapped a few stellar radii away at the intersections of the magnetic and rotational equators. The emission lines arise from these gaseous accumulations, which are forced to co-rotate at the rotational velocity of the stellar surface.
 
+\begin{figure}[h!]
+\includegraphics[angle=0,scale=.4]{Screenshot-23.png}
+\caption{Phase-fold lightcurves for HD~345439. \label{fig1}}
+\end{figure}
 
-
-%\begin{figure}[h!]
-%\includegraphics[angle=0,scale=.29]{mrk266_color.png}
-%\caption{Color image (HST ACS $I$ and $B$ band) of Mrk 266 from \citet{2012AJ....144..125M}. \label{fig1}}
-%\end{figure}
+Perhaps the key result of this paper is the tentative establishment of a photometric period for the variability associated with HD~345439. Figure~\ref{fig1} shows optical lightcurves for HD~345439, folded by the estimated period of $\sim$0.77 days.
 
 
 
 \bibliography{mybib}{}
-\bibliographystyle{plain}
+
 
 \end{document}

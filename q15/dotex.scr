@@ -2,4 +2,3 @@ pdfatex myarticle
 bibtex myarticle
 pdflatex myarticle
 pdflatex myarticle
-

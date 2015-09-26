@@ -1,3 +1,3 @@
 fun_with_loops:
-	cc -c fun_with_loops.c
-	cc -o fun_with_loops fun_with_loops.o
+	f95 -c fun_with_loops.f95
+	f95 -o fun_with_loops fun_with_loops.o

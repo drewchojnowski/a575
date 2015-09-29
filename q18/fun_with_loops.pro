@@ -12,24 +12,26 @@ pro fun_with_loops
 ;   sum of the factorials:    6.2270208e+09
 
 x=1
-iter_count=0
+iteration_count=0
 factorial_sum=0
+xmax=100
+do_factorial_limit=20
+x_multiply=2
+x_add=1
 
-if ~KEYWORD_SET(stop_at) then stop_at=100
-
-while x le 100 do begin
-    if x lt 20 then begin
+while x le xmax do begin
+    if x lt do_factorial_limit then begin
         y=x
         x=factorial(x)
 	print,'when x was ',long(y),', factorial was ',x
 	factorial_sum=factorial_sum + x
     endif
-    x=(x*2)+1
-    iter_count=iter_count+1
+    x=(x*x_multiply)+x_add
+    iteration_count=iteration_count+1
 endwhile
 
 print,'final x value: ',x
-print,'# of times the loop executed: ',iter_count
+print,'# of times the loop executed: ',iteration_count
 print,'sum of the factorials: ',factorial_sum
 
 end

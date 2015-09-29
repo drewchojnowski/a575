@@ -1,5 +1,6 @@
 pro fun_with_loops
 
+;===================================================================
 ; OUTPUT:
 ;
 ;   IDL> fun_with_loops
@@ -10,14 +11,18 @@ pro fun_with_loops
 ;   final x value:    1.2454042e+10
 ;   # of times the loop executed:        3
 ;   sum of the factorials:    6.2270208e+09
+;===================================================================
 
+; VARIABLES:
 x=1
-iteration_count=0
-factorial_sum=0
 xmax=100
 do_factorial_limit=20
 x_multiply=2
 x_add=1
+
+; COUNTERS
+iteration_count=0
+factorial_sum=0
 
 while x le xmax do begin
     if x lt do_factorial_limit then begin

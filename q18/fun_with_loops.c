@@ -1,14 +1,15 @@
 #include<stdio.h>
 
-/* OUTPUT:
-drew@drewPC:~/a575/q18$ ./fun_with_loops 
-   when x was 1, factorial was 1
-   when x was 3, factorial was 6
-   when x was 13, factorial was 1932053504
-   final x value: 3864107009
-   # of times the loop executed: 3
-   sum of the factorials: 1932053511
-*/
+/*=============================================
+OUTPUT:
+   drew@drewPC:~/a575/q18$ ./fun_with_loops 
+      when x was 1, factorial was 1
+      when x was 3, factorial was 6
+      when x was 13, factorial was 1932053504
+      final x value: 3864107009
+      # of times the loop executed: 3
+      sum of the factorials: 1932053511
+=============================================*/
 
 /* NOTE:
 I'm not quite sure why this isn't working, i.e. why the value of get_factorial(13) is wrong.
@@ -17,21 +18,19 @@ I experimented with data types to try and remedy this, but did not succeed.
 
 int main() 
 {
-    int i;
-    unsigned long long int x=1;
-    int y=0;
-    int iter_count=0;
-    unsigned long long int factorial_sum=0;
+    int i, y=0, iter_count=0;
+    unsigned long long int x=1, factorial_sum=0;
+    int xmax=100, do_factorial_limit=20, x_multiply=2, x_add=1;
 
-    while (x <= 100) {
-        if (x < 20) {
+    while (x <= xmax) {
+        if (x < do_factorial_limit) {
             y=x;
             x=get_factorial(x);
             printf("when x was %d, factorial was %llu\n",y,x);
             factorial_sum=factorial_sum+x;
         }
-        x=(x*2)+1;
-        iter_count=iter_count+1;
+        x=(x*x_multiply)+x_add;
+        iter_count++;
     }
 
     // this is a simple C program

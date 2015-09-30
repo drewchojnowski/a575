@@ -16,9 +16,10 @@ program fun_with_loops
     integer(8) :: y=0,iter_count=0
     ! variables
     integer(8) :: x=1,factorial_sum=0
+    integer :: xmax=100,do_factorial_limit=20,x_multiply=2,x_add=1
 
-    do while (x.le.100)
-        if (x.lt.20) then
+    do while (x.le.xmax)
+        if (x.lt.do_factorial_limit) then
             y=x
             nfac=1
             do i=2, x
@@ -28,7 +29,7 @@ program fun_with_loops
             print *,'when x was ',y,', factorial was ',x
             factorial_sum=factorial_sum+x
         endif
-        x=(x*2)+1
+        x=(x*x_multiply)+x_add
         iter_count=iter_count+1
     enddo
 

@@ -1,5 +1,3 @@
-The IDL and Python versions of this code run without error and produce identical results.
+The IDL, Python, and Fortran versions run without error and produce roughly identical results.
 
-The C version runs without error, but gets a different answer than IDL/Python.
-
-The Fortran 95 version doesn't work yet, and the factorial module is stolen from the internet.
+The C version runs without error but gets a different answer than IDL/Python, presumably due to issues with variable type.

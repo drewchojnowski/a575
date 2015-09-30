@@ -18,8 +18,7 @@ I experimented with data types to try and remedy this, but did not succeed.
 
 int main() 
 {
-    int i, y=0, iter_count=0;
-    unsigned long long int x=1, factorial_sum=0;
+    unsigned long long int x=1, factorial_sum=0, y=0, iter_count=0;
     int xmax=100, do_factorial_limit=20, x_multiply=2, x_add=1;
 
     while (x <= xmax) {
@@ -41,9 +40,9 @@ int main()
 
 }
 
-int get_factorial(int x)
+int get_factorial(unsigned long long int x)
 {
-    int i, f=1;
+    unsigned long long int i, f=1;
  
     for(i=1;i<=x;i++)
         f=f*i;

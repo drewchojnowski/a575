@@ -1,3 +1,3 @@
-This program returns requested columns in Table format (not dictionary).
+This program returns requested columns of a given age in Table format (not dictionary).
 
 I commented out line 13 from zp00.dat so that the column names are automatically found by astropy.io.ascii.read, but this means that user-supplied 'quantities' values must match the header names in that file exactly.

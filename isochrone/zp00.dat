@@ -10,7 +10,7 @@
 # On RGB, assumed Reimers mass loss with efficiency eta=0.2
 # Kind of output: isochrone tables
 #	Isochrone  Z = 0.01520	Y = 0.27554	[M/H] = 0.015	eta_R = 0.200	Age = 	1.0000e+08 yr
-#      Z	log(age/yr)	M_ini   	M_act	logL/Lo	logTe	logG	mbol    U       B       V       R       I       J       H       K	int_IMF	stage
+      Z	log(age/yr)	M_ini   	M_act	logL/Lo	logTe	logG	mbol    U       B       V       R       I       J       H       K	int_IMF	stage
 	0.015200	8.0000	0.10000000	0.1000	-2.5384	3.5195	5.0002	11.116	16.075	14.597	13.025	11.903	10.552	9.300	8.750	8.497	1.57040203	0
 	0.015200	8.0000	0.10012339	0.1001	-2.5375	3.5195	5.0002	11.114	16.071	14.593	13.022	11.900	10.550	9.298	8.748	8.495	1.57160807	0
 	0.015200	8.0000	0.10553912	0.1055	-2.4998	3.5229	4.9990	11.020	15.895	14.437	12.877	11.770	10.445	9.211	8.660	8.409	1.62305129	0

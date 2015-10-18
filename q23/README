@@ -1,1 +1,4 @@
-For this problem, I decided to take a stab at converting my IDL code to Python. So far, the program successfully does the integration and calculates values. I haven't gotten to the plotting part yet.
+For this problem, I decided to take a stab at converting my IDL code to Python. The plotting part isn't finished, but I'm calling it a day since I've already put in about 3.5-4 hours on this.
+
+Example output from the integration and plotting routine are included.
+

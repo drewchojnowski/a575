@@ -29,8 +29,6 @@ int main()
         iter_count++;
     }
 
-    // this is a simple C program
-
     printf("final x value: %d\n",x);
     printf("# of times the loop executed: %d\n",iter_count);
     printf("sum of the factorials: %f\n",factorial_sum);

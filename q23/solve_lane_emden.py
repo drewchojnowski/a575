@@ -6,14 +6,7 @@ from astropy import constants as const
 from astropy.table import Table, Column
 import matplotlib.pyplot as plt
 
-default_n=2.0
-default_dx=0.0001
-
-def integrate_le(n=None,dx=None):
-    # Defaults for n and dx, in case not provided
-    if n is None: n=default_n
-    if dx is None: dx=default_dx
-
+def integrate_le(n=2.0,dx=0.0001):
     # BOUNDARY CONDITIONS:
     #    1. t(x)=1 at x=0
     #    2. dt/dx=0 at x=0
@@ -40,13 +33,8 @@ def integrate_le(n=None,dx=None):
 
     return x
 
-def calculate_values(n=None,dx=None,xfrac=None,zfrac=None,mass=None,radius=None,display=None):
-    # Defaults for n and dx, in case not provided
-    if n is None: n=default_n
-    if dx is None: dx=default_dx
-
-    # check for the polytrope outfile
-    # create it if it doesn't exist
+def calculate_values(n=2.0,dx=0.0001,xfrac=0.7,zfrac=0.02,mass=1.0,radius=1.0,display=False):
+    # check for the polytrope outfile, create it if it doesn't exist
     polyfile='polytrope_n'+str(n)+'.dat'
     if os.path.exists(polyfile) is not True:
         integrate_le(n)
@@ -57,18 +45,12 @@ def calculate_values(n=None,dx=None,xfrac=None,zfrac=None,mass=None,radius=None,
     t=data['t']
     dtdx=data['dtdx']
 
-    # set default abundances if not provided
-    if xfrac is None: xfrac=0.7
-    if zfrac is None: zfrac=0.02
     # calculate mean molecular weight
     mmw=4.0/(3.0+(5.0*xfrac)-zfrac)
 
-    # set default mass and radius if not provided
-    if mass is None: mass=1.0
-    if radius is None: radius=1.0
     # mass and radius should be provided in terms of M_sun/R_sun
-    mass=mass*const.M_sun.cgs
-    radius=radius*const.R_sun.cgs
+    mass=mass*const.M_sun.cgs.base
+    radius=radius*const.R_sun.cgs.base
 
     # other needed constants
     grav=const.G.cgs
@@ -92,23 +74,19 @@ def calculate_values(n=None,dx=None,xfrac=None,zfrac=None,mass=None,radius=None,
 
     # put the values in a Table, print the Table, and return the Table.
     out=Table()
-    out['M_tot']=mass; out['Radius']=radius; 
+    out['M_tot']=[mass]
+    out['Radius']=[radius]
     out['n']=[n];         out['xi_1']=[x1[0]]; out['rho_c/rho_mean']=[rhofrac[0]]
     out['N_n']=[n_n[0]];  out['W_n']=[w_n[0]]; out['Theta_n']=[bigtheta[0]]
     out['rho_c']=[rho_c]; out['P_c']=[p_c];    out['T_c']=[t_c]
     out['K']=[k]
 
-    if display is not None: print out
+    if display: print out
 
     return out
 
-def make_plot(n=None,dx=None,save=None,show=None):
-    # Defaults for n and dx, in case not provided
-    if n is None: n=default_n
-    if dx is None: dx=default_dx
-
-    # check for the polytrope outfile
-    # create it if it doesn't exist
+def make_plot(n=2.0,dx=0.0001,save=False,show=False):
+    # check for the polytrope outfile, create it if it doesn't exist
     polyfile='polytrope_n'+str(n)+'.dat'
     if os.path.exists(polyfile) is not True:
         integrate_le(n)
@@ -141,7 +119,7 @@ def make_plot(n=None,dx=None,save=None,show=None):
     plt.text(3.0,0.78,r'$\theta^{n}(\xi) = \rho/\rho_{c}$',color='b')
     plt.text(3.0,0.71,r'$\theta^{n+1}(\xi) = P/P_{c}$',color='g')
 
-    if save is not None: plt.savefig('polytrope_n'+str(n)+'.png')
-    if show is not None: plt.show()
+    if save: plt.savefig('polytrope_n'+str(n)+'.png')
+    if show: plt.show()
 
 

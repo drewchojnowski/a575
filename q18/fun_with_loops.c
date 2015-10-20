@@ -1,5 +1,3 @@
-#include<stdio.h>
-
 /*=============================================
 OUTPUT:
     drew@drewPC:~/a575/q18$ ./fun_with_loops 
@@ -11,6 +9,7 @@ OUTPUT:
     # of times the loop executed: 6
     sum of the factorials: 1307674279936.000000
 =============================================*/
+#include<stdio.h>
 
 int main() 
 {

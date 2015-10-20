@@ -1,16 +1,15 @@
-import math
-
 #===================================================================
 # OUTPUT:
-#
 #   drew@drewPC:~/a575/q18$ python fun_with_loops.py 
 #   when x was  1 , factorial was  1
 #   when x was  3 , factorial was  6
-#   when x was  13 , factorial was  6227020800
-#   final x value:  12454041601
-#   # of times the loop executed:  3
-#   sum of the factorials:  6227020807
+#   when x was  7 , factorial was  5040
+#   when x was  15 , factorial was  1307674368000
+#   final x value:  127
+#   of times the loop executed:  6
+#   sum of the factorials:  1307674373047
 #===================================================================
+import math
 
 # VARIABLES:
 x=1
@@ -25,10 +24,9 @@ factorial_sum=0
 
 while x <= xmax:
     if x < do_factorial_limit:
-        y=x
-        x=math.factorial(x)
-        print 'when x was ',y,', factorial was ',x
-        factorial_sum=factorial_sum+x
+        y=math.factorial(x)
+        print 'when x was ',x,', factorial was ',y
+        factorial_sum=factorial_sum+y
     x=(x*x_multiply)+x_add
     iter_count=iter_count+1
 

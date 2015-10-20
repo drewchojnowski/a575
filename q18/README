@@ -1,3 +1,1 @@
-The IDL, Python, and Fortran versions run without error and produce roughly identical results.
-
-The C version runs without error but gets a different answer, presumably due to issues with variable type.
+These programs produce roughly identical results. 

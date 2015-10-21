@@ -1,0 +1,4 @@
+(a) mv file.txt file.txt.old
+(b) rename .txt .txt.old *.txt
+(c) rename .txt .dat *.txt
+(d) rename .txt .txt.a.old *.txt

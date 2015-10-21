@@ -1,0 +1,24 @@
+In [11]: ndetector=62.0
+
+In [12]: datasz=2.0
+
+In [13]: nimages=500.0
+
+In [14]: ypix=4096.
+
+In [15]: xpix=2048.
+
+In [16]: print (ndetector*ypix*xpix*nimages*datasz)/(10**9.)
+520.093696
+
+So, each image is about 520 GB. If 500 images are taken per night...
+
+In [19]: print (ndetector*ypix*xpix*nimages*datasz*500.)/(10**12.)
+260.046848
+
+... then we're talking 260 TB of data.
+
+This could not be stored on the disk of my desktop, since it only has 
+a TB of disk space. I also don't think Hyades nor any other department
+machine has sufficient disk space. For example, Hyades' largest hard disk 
+can only store 19 TB.

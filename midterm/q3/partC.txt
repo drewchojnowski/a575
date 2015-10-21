@@ -1,0 +1,8 @@
+I get an answer of 5023.20794417:
+
+
+In [1]: import partB as a
+
+In [2]: print a.simpson(0,10)
+5023.20794417
+

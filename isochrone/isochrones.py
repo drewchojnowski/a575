@@ -39,12 +39,15 @@ def plot_iso(infile,age=None,outfile=None,show=False):
     fig, axes = plt.subplots(2,2)
     ax0, ax1, ax2, ax3 = axes.flat
 
-    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.4, hspace=0.1)
+    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.3, hspace=0.1)
 
-    ax0.plot(data['logTe'],data['logG'])
-    ax2.plot(data['logTe'],data['mbol'])
-    ax1.plot(data['logTe'],data['logG'])
-    ax3.plot(data['logTe'],data['logG'])
+    sc=ax0.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
+    ax2.scatter(data['logTe'],data['mbol'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
+    ax1.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
+    ax3.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
+
+    cbar=plt.colorbar(sc)
+    cbar.set_label('log(age/yr)')
 
     ax2.set_xlabel(r'Log $\rm T_{eff}$')
     ax3.set_xlabel(r'Log $\rm T_{eff}$')

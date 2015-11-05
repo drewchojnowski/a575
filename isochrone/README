@@ -1,7 +1,7 @@
-10/15: This program returns requested columns of a given age in Table format, and also makes a 4-panel plot.
+10/15: the "get_isochrone_struct" program returns requested columns of a given age in Table format, and also makes a 4-panel plot.
 
 Note: I commented out line 13 from zp00.dat so that the column names are automatically found by astropy.io.ascii.read, but this means that user-supplied 'quantities' values must match the header names in that file exactly.
 
-11/2/15: added a plotting routine to the isochrones module. Example output is included (test.png).
+11/2/15: added a plotting routine ("plot_iso") to the isochrones module. Example output is included (test.png).
 
 Note: to achieve the desired result without having to be at NMSU or logged into NMSU, I made a copy your isochrone directory. Line 10 will need to be modified for you to run this.

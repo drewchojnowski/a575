@@ -1,8 +1,16 @@
+import os
 import numpy as np
 from astropy.io import ascii
+import matplotlib
+import matplotlib.pyplot as plt
+import math
+import glob
+
+#os.environ['ISOCHRONE_DIR'] = 'isochrones/'
+isochrone_dir='isochrones/'
 
 def get_isochrone_struct(infile,quantities=None,age=None,outfile=None):
-    data=ascii.read(infile)
+    data=ascii.read(isochrone_dir+infile)
 
     # option to select a certain age
     if age is not None:
@@ -26,49 +34,105 @@ def get_isochrone_struct(infile,quantities=None,age=None,outfile=None):
 
     return data
 
-def plot_iso(infile,age=None,outfile=None,show=False):
-    import matplotlib.pyplot as plt
+def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',cmap2='rainbow'):
+    # set up some plotting parameters
+    plt.clf()
+    fig=plt.subplots(2,2,figsize=(14, 10))
+    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
+    xtit=r'Log $\rm T_{eff}$'
+    ytit1='log g'
+    ytit2=r'M$\rm_{bol}$'
 
-    data=ascii.read(infile)
-
-    # option to select a certain age
-    if age is not None:
+    # collect some data for left side plots
+    files=glob.glob(isochrone_dir+'z*dat')
+    logte_all=None
+    logg_all=None
+    mbol_all=None
+    feh_all=None
+    for file in files:
+        # read data and restrict to a certain age
+        data=ascii.read(file)
         gd=np.where(data['log(age/yr)']==age)
         data=data[gd]
 
-    fig, axes = plt.subplots(2,2)
-    ax0, ax1, ax2, ax3 = axes.flat
+        # decompose filename to get array of [M/H] values
+        tmp=file.split("z")
+        tmp=tmp[1].split(".")[0]
+        sign=tmp[0:1]
+        feh_str=tmp[1:3]
+        feh_val=float(feh_str[0:1]+'.'+feh_str[1:2])
+        if sign=='m': feh_val=feh_val*-1
 
-    plt.subplots_adjust(left=None, bottom=None, right=None, top=None, wspace=0.3, hspace=0.1)
+        # build up arrays for plots
+        logte=data['logTe'].tolist()
+        logg=data['logG'].tolist()
+        mbol=data['mbol'].tolist()
+        feh_arr=np.repeat(feh_val,len(data)).tolist()
+        if logte_all is None:
+            logte_all=logte
+            logg_all=logg
+            mbol_all=mbol
+            feh_all=feh_arr
+        else:
+            logte_all=logte_all+logte
+            logg_all=logg_all+logg
+            mbol_all=mbol_all+mbol
+            feh_all=feh_all+feh_arr
 
-    sc=ax0.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
-    ax2.scatter(data['logTe'],data['mbol'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
-    ax1.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
-    ax3.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap='jet',edgecolors='none')
+    # left side plots
+    p1=plt.subplot(221)
+    plt.scatter(logte_all,logg_all,c=feh_all,cmap=cmap1,edgecolors='none',s=symsize)
+    plt.gca().invert_xaxis()
+    plt.xticks([])
+    plt.ylabel(ytit1)
+    plt.text(0.5,1.04,'Age = '+str(age)+' Gyr',transform=p1.transAxes,ha='center')
 
-    cbar=plt.colorbar(sc)
-    cbar.set_label('log(age/yr)')
+    p2=plt.subplot(223)
+    plt.scatter(logte_all,mbol_all,c=feh_all,cmap=cmap1,edgecolors='none',s=symsize)
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.xlabel(xtit)
+    plt.ylabel(ytit2)
 
-    ax2.set_xlabel(r'Log $\rm T_{eff}$')
-    ax3.set_xlabel(r'Log $\rm T_{eff}$')
+    #            left   bot  xthick ythick
+    cax=plt.axes([0.395, 0.07, 0.03, 0.88])
+    cb=plt.colorbar(cax=cax, orientation='vertical')
+    plt.text(0.5,0.5,'[M/H]',transform=cax.transAxes,rotation=90,ha='center',va='center')
 
-    ax0.set_ylabel('Log g')
-    ax2.set_ylabel('Mbol')
-    ax1.set_ylabel('Log g')
-    ax3.set_ylabel('Log g')
+    # get the single metallicity isochrone
+    if feh < 0: pref='zm'
+    if feh >= 0: pref='zp'
+    bla=str(abs(feh))
+    strfeh=pref+bla[0:1]+bla[2:3]
 
-    ax0.set_xlim((4.2,3.4))
-    ax2.set_xlim((4.2,3.4))
-    ax1.set_xlim((4.2,3.4))
-    ax3.set_xlim((4.2,3.4))
+    data=ascii.read(isochrone_dir+strfeh+'.dat')
 
-    ax0.set_xticklabels([])
-    ax1.set_xticklabels([])
+    # right side plots
+    p3=plt.subplot(222)
+    plt.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap=cmap2,edgecolors='none',s=symsize)
+    plt.gca().invert_xaxis()
+    plt.xticks([])
+    plt.ylabel(ytit1)
+    plt.text(0.5,1.04,'[M/H] = '+str(feh),transform=p3.transAxes,ha='center')
 
-    # option to write an output file
+    p4=plt.subplot(224)
+    plt.scatter(data['logTe'],data['mbol'],c=data['log(age/yr)'],cmap=cmap2,edgecolors='none',s=symsize)
+    plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
+    plt.xlabel(xtit)
+    plt.ylabel(ytit2)
+
+    cax=plt.axes([0.919, 0.07, 0.03, 0.88])
+    cb=plt.colorbar(cax=cax, orientation='vertical')
+    plt.text(0.5,0.5,'log(age/yr)',transform=cax.transAxes,rotation=90,ha='center',va='center')
+
+    plt.subplots_adjust(left=0.053, bottom=0.07, right=0.915, top=0.95, wspace=0.55, hspace=0.1)
+
+    # option to display on screen
+    if show: plt.show()
+
+    # option to write an output file (only works if show=False)
     if outfile is not None:
         plt.savefig(outfile)
-
-    if show: plt.show()
 
     return data

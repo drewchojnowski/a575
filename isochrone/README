@@ -5,3 +5,6 @@ Note: I commented out line 13 from zp00.dat so that the column names are automat
 11/2/15: added a plotting routine ("plot_iso") to the isochrones module. Example output is included (test.png).
 
 Note: to achieve the desired result without having to be at NMSU or logged into NMSU, I made a copy your isochrone directory. Line 10 will need to be modified for you to run this.
+
+11/6/15: attempted to write a routine for making a Hess diagram, but largely failed (see "plot_hess" in "isochrones.py."
+

@@ -35,14 +35,6 @@ def get_isochrone_struct(infile,quantities=None,age=None,outfile=None):
     return data
 
 def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',cmap2='rainbow'):
-    # set up some plotting parameters
-    plt.clf()
-    fig=plt.subplots(2,2,figsize=(14, 10))
-    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
-    xtit=r'Log $\rm T_{eff}$'
-    ytit1='log g'
-    ytit2=r'M$\rm_{bol}$'
-
     # collect some data for left side plots
     files=glob.glob(isochrone_dir+'z*dat')
     logte_all=None
@@ -79,10 +71,18 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
             mbol_all=mbol_all+mbol
             feh_all=feh_all+feh_arr
 
+    # set up some plotting parameters
+    fig=plt.subplots(2,2,figsize=(14, 10))
+    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
+    xtit=r'Log $\rm T_{eff}$'
+    ytit1='log g'
+    ytit2=r'M$\rm_{bol}$'
+
     # left side plots
     p1=plt.subplot(221)
     plt.scatter(logte_all,logg_all,c=feh_all,cmap=cmap1,edgecolors='none',s=symsize)
     plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
     plt.xticks([])
     plt.ylabel(ytit1)
     plt.text(0.5,1.04,'Age = '+str(age)+' Gyr',transform=p1.transAxes,ha='center')
@@ -111,6 +111,7 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
     p3=plt.subplot(222)
     plt.scatter(data['logTe'],data['logG'],c=data['log(age/yr)'],cmap=cmap2,edgecolors='none',s=symsize)
     plt.gca().invert_xaxis()
+    plt.gca().invert_yaxis()
     plt.xticks([])
     plt.ylabel(ytit1)
     plt.text(0.5,1.04,'[M/H] = '+str(feh),transform=p3.transAxes,ha='center')
@@ -129,10 +130,54 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
     plt.subplots_adjust(left=0.053, bottom=0.07, right=0.915, top=0.95, wspace=0.55, hspace=0.1)
 
     # option to display on screen
-    if show: plt.show()
+    if show: 
+        plt.show()
 
     # option to write an output file (only works if show=False)
     if outfile is not None:
         plt.savefig(outfile)
 
-    return data
+
+    return
+
+def plot_hess(infile='zp00.dat',outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=100.0,nbins=50):
+    data=ascii.read(infile)
+    ndata=len(data['Z'])
+    x=data['logTe']
+    y=data['logL/Lo']
+    imf=[]
+    for i in range(ndata):
+        if i==0:
+            imf.append(0.0)
+        else:
+            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*1000.0)
+
+    fig=plt.figure(1,figsize=(8, 7))
+    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
+#    plt.scatter(data[quantities[0]],data[quantities[1]],zorder=1,edgecolors='none',s=1,c='black')
+
+#    Z, xedges, yedges = np.histogram2d(data['logTe'],data['logL/Lo'],bins=(300,300))
+#    x = 0.5*(xedges[:-1] + xedges[1:])
+#    y = 0.5*(yedges[:-1] + yedges[1:])
+#    Y, X = np.meshgrid(y, x)
+#    Z = np.ma.array(Z, mask=(Z==0))
+#    levels = [0, 0.5, 1, 2, 4, 8]
+#    cntr=plt.contourf(X,Y,Z,levels,cmap='terrain',zorder=2)
+
+    plt.hist2d(x, y, bins=nbins,cmap='jet',weights=imf,cmin=0.0001,cmax=5)
+
+    plt.xlabel(quantities[0])
+    plt.ylabel(quantities[1])
+    plt.gca().invert_xaxis()
+
+    # option to display on screen
+    if show: 
+        plt.show()
+
+    # option to write an output file (only works if show=False)
+    if outfile is not None:
+        plt.savefig(outfile,dpi=300)
+
+    return imf
+
+

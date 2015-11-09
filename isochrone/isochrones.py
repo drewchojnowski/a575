@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import math
 import glob
+from matplotlib.colors import LogNorm
 
 #os.environ['ISOCHRONE_DIR'] = 'isochrones/'
 isochrone_dir='isochrones/'
@@ -140,31 +141,24 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
 
     return
 
-def plot_hess(infile='zp00.dat',outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=100.0,nbins=50):
-    data=ascii.read(infile)
-    ndata=len(data['Z'])
-    x=data['logTe']
-    y=data['logL/Lo']
+def plot_hess(infile='zp00.dat',age=8.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=100.0,nbins=50):
+    data=get_isochrone_struct(infile,age=age)
+    x=data[quantities[0]]
+    y=data[quantities[1]]
     imf=[]
-    for i in range(ndata):
+    for i in range(len(x)):
         if i==0:
             imf.append(0.0)
         else:
-            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*1000.0)
+            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*m_tot)
 
     fig=plt.figure(1,figsize=(8, 7))
     matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
-#    plt.scatter(data[quantities[0]],data[quantities[1]],zorder=1,edgecolors='none',s=1,c='black')
 
-#    Z, xedges, yedges = np.histogram2d(data['logTe'],data['logL/Lo'],bins=(300,300))
-#    x = 0.5*(xedges[:-1] + xedges[1:])
-#    y = 0.5*(yedges[:-1] + yedges[1:])
-#    Y, X = np.meshgrid(y, x)
-#    Z = np.ma.array(Z, mask=(Z==0))
-#    levels = [0, 0.5, 1, 2, 4, 8]
-#    cntr=plt.contourf(X,Y,Z,levels,cmap='terrain',zorder=2)
-
-    plt.hist2d(x, y, bins=nbins,cmap='jet',weights=imf,cmin=0.0001,cmax=5)
+    plt.hist2d(x, y, bins=nbins,cmap='hot_r',weights=imf,norm=LogNorm())
+    cb=plt.colorbar()
+    cb.set_label('Solar masses')
+    plt.scatter(x,y,zorder=1,edgecolors='none',s=1,c='black')
 
     plt.xlabel(quantities[0])
     plt.ylabel(quantities[1])

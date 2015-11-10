@@ -141,10 +141,25 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
 
     return
 
-def plot_hess(infile='zp00.dat',age=8.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=100.0,nbins=50):
+def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[50,50]):
     data=get_isochrone_struct(infile,age=age)
     x=data[quantities[0]]
     y=data[quantities[1]]
+    xxrange=[min(x),max(x)]
+    yrange=[min(y),max(y)]
+    if len(nbins)==2:
+        xbin=abs(xxrange[1]-xxrange[0])/nbins[0]
+        ybin=abs(yrange[1]-yrange[0])/nbins[1]
+    else:
+        xbin=abs(xxrange[1]-xxrange[0])/nbins[0]
+        ybin=abs(yrange[1]-yrange[0])/nbins[0]
+
+    ximage=(x-xxrange[0])/xbin
+    yimage=(y-yrange[0])/ybin
+
+    nx=int(abs(xxrange[1]-xxrange[0])/xbin)
+    nx=int(abs(yrange[1]-yrange[0])/ybin)
+
     imf=[]
     for i in range(len(x)):
         if i==0:
@@ -152,6 +167,9 @@ def plot_hess(infile='zp00.dat',age=8.0,outfile=None,quantities=['logTe','logL/L
         else:
             imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*m_tot)
 
+    return ximage
+
+"""
     fig=plt.figure(1,figsize=(8, 7))
     matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
 
@@ -171,7 +189,7 @@ def plot_hess(infile='zp00.dat',age=8.0,outfile=None,quantities=['logTe','logL/L
     # option to write an output file (only works if show=False)
     if outfile is not None:
         plt.savefig(outfile,dpi=300)
+"""
 
-    return imf
 
 

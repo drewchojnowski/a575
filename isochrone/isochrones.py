@@ -158,7 +158,11 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
     yimage=(y-yrange[0])/ybin
 
     nx=int(abs(xxrange[1]-xxrange[0])/xbin)
-    nx=int(abs(yrange[1]-yrange[0])/ybin)
+    ny=int(abs(yrange[1]-yrange[0])/ybin)
+
+    image=np.empty([nx,ny])
+
+    
 
     imf=[]
     for i in range(len(x)):

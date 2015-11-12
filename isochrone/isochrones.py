@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import math
 import glob
 from matplotlib.colors import LogNorm
+from matplotlib.ticker import MultipleLocator
 
 #os.environ['ISOCHRONE_DIR'] = 'isochrones/'
 isochrone_dir='isochrones/'
@@ -141,7 +142,7 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
 
     return
 
-def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[50,50]):
+def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[30,30]):
     data=get_isochrone_struct(infile,age=age)
     x=data[quantities[0]]
     y=data[quantities[1]]
@@ -154,27 +155,55 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
         xbin=abs(xxrange[1]-xxrange[0])/nbins[0]
         ybin=abs(yrange[1]-yrange[0])/nbins[0]
 
-    ximage=(x-xxrange[0])/xbin
-    yimage=(y-yrange[0])/ybin
+    ximage=np.floor((x-xxrange[0])/xbin).astype(int)
+    yimage=np.floor((y-yrange[0])/ybin).astype(int)
+    
 
-    nx=int(abs(xxrange[1]-xxrange[0])/xbin)
-    ny=int(abs(yrange[1]-yrange[0])/ybin)
+#    nx=int(abs(xxrange[1]-xxrange[0])/xbin)
+#    ny=int(abs(yrange[1]-yrange[0])/ybin)
 
-    image=np.empty([nx,ny])
+    image=[]
+    image.append([])
+    image.append([])
+    image=np.zeros([len(ximage),len(yimage)])
 
-    for i in range():
-        for j in range(nx):
-            for k in range(ny):
-                image[j,k]=?
+    for i in range(len(x)-1):
+        for j in range(nbins[0]):
+            nnx=ximage[i+1]-ximage[i]
+#            print 'nnx=',nnx
+            for k in range(nbins[1]):
+                nny=yimage[i+1]-yimage[i]
+#                print 'nny=',nny
+                image[j,k]=(data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot
 
-    imf=[]
-    for i in range(len(x)):
-        if i==0:
-            imf.append(0.0)
-        else:
-            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*m_tot)
+    fig=plt.figure()
+    ax1 = fig.add_subplot(1,1,1)
+    spacing = 1.0
+    minorLocator = MultipleLocator(spacing)
+    ax1.plot(ximage,yimage)
+    ax1.scatter(ximage,yimage)
+    ax1.yaxis.set_minor_locator(minorLocator)
+    ax1.xaxis.set_minor_locator(minorLocator)
+    ax1.grid(which = 'minor')
 
-    return ximage
+    plt.show()
+
+#                image[j,k]=((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)/(nnx*nny)
+#                image[1].append(((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)/nny)
+
+
+
+#                p=data['int_IMF'][i]-data['int_IMF'][i-1]*m_tot
+#                image[j,k]= [p/nnx,p/nny]
+
+#    imf=[]
+#    for i in range(len(x)):
+#        if i==0:
+#            imf.append(0.0)
+#        else:
+#            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*m_tot)
+
+    return image,ximage,yimage
 
 """
     fig=plt.figure(1,figsize=(8, 7))

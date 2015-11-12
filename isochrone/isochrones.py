@@ -142,7 +142,7 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
 
     return
 
-def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[30,30]):
+def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[10,10]):
     data=get_isochrone_struct(infile,age=age)
     x=data[quantities[0]]
     y=data[quantities[1]]
@@ -158,10 +158,6 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
     ximage=np.floor((x-xxrange[0])/xbin).astype(int)
     yimage=np.floor((y-yrange[0])/ybin).astype(int)
     
-
-#    nx=int(abs(xxrange[1]-xxrange[0])/xbin)
-#    ny=int(abs(yrange[1]-yrange[0])/ybin)
-
     image=[]
     image.append([])
     image.append([])
@@ -196,14 +192,14 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
 #                p=data['int_IMF'][i]-data['int_IMF'][i-1]*m_tot
 #                image[j,k]= [p/nnx,p/nny]
 
-#    imf=[]
-#    for i in range(len(x)):
-#        if i==0:
-#            imf.append(0.0)
-#        else:
-#            imf.append((data['int_IMF'][i]-data['int_IMF'][i-1])*m_tot)
+    imf=[]
+    for i in range(len(x)-1):
+        if i==0:
+            imf.append(0.0)
+        else:
+            imf.append((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)
 
-    return image,ximage,yimage
+    return imf,image,ximage,yimage
 
 """
     fig=plt.figure(1,figsize=(8, 7))

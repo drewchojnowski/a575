@@ -1,0 +1,5 @@
+Indeed, the concept of random number generation is quite weird.
+
+I was curious about how it's done, so I google searched and found this nice description https://cdsmith.wordpress.com/2011/10/10/build-your-own-simple-random-numbers/, complete with a few basic examples that can easily be tested in Python.
+
+

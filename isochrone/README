@@ -1,11 +1,13 @@
-10/15: the "get_isochrone_struct" program returns requested columns of a given age in Table format, and also makes a 4-panel plot.
+10/15/15: the "get_isochrone_struct" program returns requested columns of a given age in Table format, and also makes a 4-panel plot.
 
 Note: I commented out line 13 from zp00.dat so that the column names are automatically found by astropy.io.ascii.read, but this means that user-supplied 'quantities' values must match the header names in that file exactly.
 
-11/2/15: added a plotting routine ("plot_iso") to the isochrones module. Example output is included (test.png).
+11/02/15: added a plotting routine ("plot_iso") to the isochrones module. Example output is included (test.png).
 
 Note: to achieve the desired result without having to be at NMSU or logged into NMSU, I made a copy your isochrone directory. Line 10 will need to be modified for you to run this.
 
-11/6/15: attempted to write a routine for making a Hess diagram, but largely failed (see "plot_hess" in "isochrones.py."
-11/9/15: attempted to improve the Hess diagram routine, and possibly succeeded (see "testhess.png").
+11/06/15: attempted to write a routine for making a Hess diagram, but largely failed (see "plot_hess" in "isochrones.py."
 
+11/09/15: attempted to improve the Hess diagram routine, and possibly succeeded (see "testhess.png").
+
+11/15/15: frustrated with Python, I tried writing an IDL script ("plothess.pro") to make a Hess diagram. Example output from this program is included here ("idl_hess.png"). This is still not the desired result, obviously. 

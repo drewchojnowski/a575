@@ -157,21 +157,27 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
 
     ximage=np.floor((x-xxrange[0])/xbin).astype(int)
     yimage=np.floor((y-yrange[0])/ybin).astype(int)
+    bla=[ximage,yimage,[0.0]*len(ximage)]
     
+
     image=[]
     image.append([])
     image.append([])
-    image=np.zeros([len(ximage),len(yimage)])
+#    image=np.zeros([len(ximage),len(yimage)])
+    image=[]
 
-    for i in range(len(x)-1):
-        for j in range(nbins[0]):
-            nnx=ximage[i+1]-ximage[i]
+    for i in range(nbins[0]):
+        for j in range(nbins[1]):
+#            nnx=ximage[i+1]-ximage[i]
 #            print 'nnx=',nnx
-            for k in range(nbins[1]):
-                nny=yimage[i+1]-yimage[i]
-#                print 'nny=',nny
-                image[j,k]=(data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot
-
+            incell=0
+            for k in range(len(x)-1):
+                if (min(x)+i*xbin) < x[k] < (min(x)+(i+1)*xbin):
+                    if (min(y)+j*ybin) < y[k] < (min(y)+(j+1)*ybin):
+                        incell=incell+1
+        if incell != 0:
+            bla[1][j]=((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)
+            
     fig=plt.figure()
     ax1 = fig.add_subplot(1,1,1)
     spacing = 1.0
@@ -184,22 +190,78 @@ def plot_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
 
     plt.show()
 
-#                image[j,k]=((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)/(nnx*nny)
-#                image[1].append(((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)/nny)
+    return bla,image,ximage,yimage
+
+def test_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[10]):
+    data=get_isochrone_struct(infile,age=age)
+    xdata=np.array(data[quantities[0]])
+    ydata=np.array(data[quantities[1]])
+    imf=np.array(data['int_IMF'])
+
+    temp=np.array([xdata,ydata,imf])
+    temp=temp.T
+    np.savetxt('hessdata.txt',temp,fmt='%.5f')
+
+#   allow for different # of bins in x and y directions
+    nbinsX=nbins[0]
+    if len(nbins)==2:
+        nbinsY=nbins[1]
+    else:
+        nbinsY=nbins[0]
+    xbinsize=abs(max(xdata)-min(xdata))/nbinsX
+    ybinsize=abs(max(ydata)-min(ydata))/nbinsY
+
+    print 'xbinsize/2.=',xbinsize/2.
+    print 'ybinsize/2.=',ybinsize/2.
+
+#    ximage=(xdata-min(xdata))/xbinsize
+#    yimage=(ydata-min(ydata))/ybinsize
+
+    xpos=[]
+    ypos=[]
+    im_imf=np.zeros(nbinsX*nbinsY)
+
+    for i in range(nbinsX):
+        for j in range(nbinsY):
+            xpos.append(min(xdata)+(xbinsize/2.)+(xbinsize*i))
+            ypos.append(min(ydata)+(ybinsize/2.)+(ybinsize*j))
+            tmp=[]
+            gd= (xpos[j]+xbinsize/2.) > xdata >= (xpos[j]-xbinsize/2.)
+            xtmp=xdata[gd]
+            ytmp=ydata[gd]
+            itmp=imf[gd]
+            gd= (ypos[j]+ybinsize/2.) > ytmp >= (ypos[j]-ybinsize/2.)
+            xtmp=xtmp[gd]
+            ytmp=ytmp[gd]
+            itmp=itmp[gd]
+
+            if len(itmp)!=0:
+                im_imf[j]=(max(itmp)-min(itmp))*m_tot
+
+ 
+#    xpos=np.array(xpos)
+#    ypos=np.array(ypos)
+#    im_imf=np.array(im_imf)
+#    hess=np.array([xpos,ypos,im_imf])
+#    hess=hess.T
+#    np.savetxt('testhess.txt',hess,fmt='%.5f')
+
+    fig=plt.figure()
+    ax1 = fig.add_subplot(1,1,1)
+    spacing = 1.0
+    minorLocator = MultipleLocator(spacing)
+#    ax1.plot(ximage,yimage)
+    ax1.scatter(xdata,ydata)
+    ax1.scatter(xpos,ypos,c=im_imf,marker='s',s=100,cmap='jet')
+    ax1.yaxis.set_minor_locator(minorLocator)
+    ax1.xaxis.set_minor_locator(minorLocator)
+    ax1.grid(which = 'minor')
+
+    plt.show()
+
+    return im_imf,xpos,ypos
 
 
-
-#                p=data['int_IMF'][i]-data['int_IMF'][i-1]*m_tot
-#                image[j,k]= [p/nnx,p/nny]
-
-    imf=[]
-    for i in range(len(x)-1):
-        if i==0:
-            imf.append(0.0)
-        else:
-            imf.append((data['int_IMF'][i+1]-data['int_IMF'][i])*m_tot)
-
-    return imf,image,ximage,yimage
 
 """
     fig=plt.figure(1,figsize=(8, 7))

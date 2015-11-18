@@ -8,6 +8,7 @@ import glob
 from matplotlib.colors import LogNorm
 from matplotlib.ticker import MultipleLocator
 import pdb
+import pyfits as pyfits
 
 #os.environ['ISOCHRONE_DIR'] = 'isochrones/'
 isochrone_dir='isochrones/'
@@ -143,10 +144,25 @@ def plot_iso(age=9.00,feh=0.0,outfile=None,show=False,symsize=4,cmap1='terrain',
 
     return
 
-def test_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=50.0,nbins=[10]):
+def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=['logTe','logL/Lo'],show=False,m_tot=1000.0,nbins=[20]):
     data=get_isochrone_struct(infile,age=age)
     xdata=np.array(data[quantities[0]])
     ydata=np.array(data[quantities[1]])
+
+    # decompose filename to get array of [M/H] values
+    tmp=infile.split("z")
+    tmp=tmp[1].split(".")[0]
+    sign=tmp[0:1]
+    feh_str=tmp[1:3]
+    feh_val=float(feh_str[0:1]+'.'+feh_str[1:2])
+    if sign=='m': feh_val=feh_val*-1
+    feh=str(feh_val)
+
+#    yr=[-3.5,4.5]
+#    xr=[3.3,4.25]
+    xr=[min(xdata),max(xdata)]
+    yr=[min(ydata),max(ydata)]
+
     imf=np.array(data['int_IMF'])
 
 #   allow for different # of bins in x and y directions
@@ -156,47 +172,40 @@ def test_hess(infile='zp00.dat',age=9.0,outfile=None,quantities=['logTe','logL/L
     else:
         nbinsY=nbins[0]
 
-    xbinsize=abs(max(xdata)-min(xdata))/nbinsX
-    ybinsize=abs(max(ydata)-min(ydata))/nbinsY
+    xbinsize=abs(xr[1]-xr[0])/nbinsX
+    ybinsize=abs(yr[1]-yr[0])/nbinsY
 
     ximage=np.floor((xdata-min(xdata))/xbinsize).astype('int')
     yimage=np.floor((ydata-min(ydata))/ybinsize).astype('int')
 
-    hess=np.zeros([nbinsX,nbinsY])
+    hess=np.zeros([nbinsX+1,nbinsY+1])
 
     for i in range(len(ximage)-1):
         nstars=(imf[i+1]-imf[i])*m_tot
-        for ix in range(min(ximage[i],ximage[i+1]),max(ximage[i],ximage[i+1])):
-            for iy in range(min(yimage[i],yimage[i+1]),max(yimage[i],yimage[i+1])):
+        for ix in range(min(ximage[i],ximage[i+1]),max(ximage[i],ximage[i+1])+1):
+            for iy in range(min(yimage[i],yimage[i+1]),max(yimage[i],yimage[i+1])+1):
                 hess[ix,iy]+=nstars/(nbinsX*nbinsY)
 
-#    plt.imshow(hess)
-
-    return hess,ximage,yimage
-
-
-
-"""
-    fig=plt.figure(1,figsize=(8, 7))
+    fig=plt.subplots(1,1,figsize=(10, 10))
     matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
+    im=plt.imshow(hess.T,interpolation='none',extent=(xr[0],xr[1],yr[0],yr[1]),aspect='auto',cmap='jet',origin='lower')
+    cb=plt.colorbar(im)
+    plt.scatter(xdata,ydata)
+    msunstr=r'$\rm M_{tot} = '+str(m_tot)+' M_{\odot}$'
+    plt.title(str(age)+' GYr,  [M/H] = '+feh+',  '+msunstr)
+    plt.xlabel(r'Log $\rm T_{eff}$')
+    plt.ylabel('Log L')
+    plt.tight_layout()
 
-    plt.hist2d(x, y, bins=nbins,cmap='hot_r',weights=imf,norm=LogNorm())
-    cb=plt.colorbar()
-    cb.set_label('Solar masses')
-    plt.scatter(x,y,zorder=1,edgecolors='none',s=1,c='black')
+    if plotfile is not None:
+        plt.savefig(plotfile)
 
-    plt.xlabel(quantities[0])
-    plt.ylabel(quantities[1])
-    plt.gca().invert_xaxis()
+    if fitsfile is not None:
+        hdu=pyfits.PrimaryHDU(hess)
+        hdulist=pyfits.HDUList([hdu])
+        hdu.writeto(fitsfile)
 
-    # option to display on screen
-    if show: 
-        plt.show()
-
-    # option to write an output file (only works if show=False)
-    if outfile is not None:
-        plt.savefig(outfile,dpi=300)
-"""
+    return hess
 
 
 

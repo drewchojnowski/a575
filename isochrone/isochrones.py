@@ -207,5 +207,32 @@ def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=[
 
     return hess
 
+def imf_random_deviates(npts=1000):
+    # mass limits
+    minM=0.5
+    maxM=100.0
+    # exponent of the IMF
+    expo=-2.35
+
+    # create the random deviates and an empty mass array
+    rand=np.random.uniform(0,1,npts)
+    m=np.zeros(npts)
+
+    # calculate the normalization constant by integrating
+    # and setting the result equal to 1.
+    # On paper, I get const=0.5300091178
+    tmp=expo+1.0
+    const=abs(tmp)/((minM**tmp)-(maxM**tmp))
+
+    # loop over the random deviates and calculate masses based 
+    # the inverted integral set equal to the random deviates.
+    # i.e. m[i]=(-1.35X/const + 0.5^-1.35)^(1/-1.35)
+    for i in range(npts):
+        m[i]=(((tmp*rand[i])/const)+(0.5**tmp))**(1.0/tmp)
+
+    plt.hist(m,bins=npts)
+    
+    return m
+
 
 

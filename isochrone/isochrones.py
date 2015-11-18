@@ -207,7 +207,7 @@ def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=[
 
     return hess
 
-def imf_random_deviates(npts=1000):
+def imf_random_deviates(npts=1000,plotfile=None):
     # mass limits
     minM=0.5
     maxM=100.0
@@ -230,8 +230,20 @@ def imf_random_deviates(npts=1000):
     for i in range(npts):
         m[i]=(((tmp*rand[i])/const)+(0.5**tmp))**(1.0/tmp)
 
-    plt.hist(m,bins=npts)
-    
+    fig, (ax0,ax1) = plt.subplots(nrows=2,figsize=(10, 10))
+    p0=ax0.hist(m,bins=npts)
+    ax0.set_ylabel('N')
+#    ax0.set_xticks([])
+    ax0.set_title(str(npts)+' random deviates')
+    p0=ax1.hist(m,bins=npts,log=True)
+    ax1.set_ylabel('N')
+    ax1.set_xlabel(r'$\rm M_{\odot}$')
+    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
+    plt.tight_layout() 
+
+    if plotfile is not None:
+        plt.savefig(plotfile)
+
     return m
 
 

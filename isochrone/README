@@ -6,5 +6,5 @@ Note: I commented out line 13 from zp00.dat so that the column names are automat
 
 Note: to achieve the desired result without having to be at NMSU or logged into NMSU, I made a copy your isochrone directory. Line 10 will need to be modified for you to run this.
 
-11/17/15: thanks to a lot of help from Jon, finally made the damned Hess diagram in Python (isochrones.py/plot_hess), including FITS image output. Example output if included here ("hess_10.1gyr..."). There are still issues, such as the x-axis going the wrong direction. I made numerous attempts to correct this, without success. 
+11/17/15: thanks to a lot of help from Jon, finally made the damned Hess diagram in Python (isochrones.py/plot_hess), including FITS image output. Example output if included here ("hess_10.1gyr..."). There are still issues, such as the x-axis going the wrong direction... I made numerous attempts to correct this, without success. Also annoying are colormaps. What I want to see is a white background for regions of the diagram with no data, and some color otherwise. I know how to accomplish this in IDL, but not yet in Python (need an easy way to trim the white edges from color tables).
 

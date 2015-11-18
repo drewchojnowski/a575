@@ -230,14 +230,22 @@ def imf_random_deviates(npts=1000,plotfile=None):
     for i in range(npts):
         m[i]=(((tmp*rand[i])/const)+(0.5**tmp))**(1.0/tmp)
 
+    x=np.arange(minM,maxM,1./npts)
+
     fig, (ax0,ax1) = plt.subplots(nrows=2,figsize=(10, 10))
     p0=ax0.hist(m,bins=npts)
+    ax0.plot(x,x**(-2.35),linewidth=3)
     ax0.set_ylabel('N')
+    ax0.set_xlim([minM,maxM])
 #    ax0.set_xticks([])
     ax0.set_title(str(npts)+' random deviates')
-    p0=ax1.hist(m,bins=npts,log=True)
+
+    p1=ax1.hist(m,bins=npts,log=True)
+#    ax1.plot(x,np.log10(x**(-2.35)),linewidth=3)
     ax1.set_ylabel('N')
     ax1.set_xlabel(r'$\rm M_{\odot}$')
+    ax1.set_xlim([minM,maxM])
+
     matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
     plt.tight_layout() 
 

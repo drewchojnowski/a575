@@ -158,10 +158,10 @@ def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=[
     if sign=='m': feh_val=feh_val*-1
     feh=str(feh_val)
 
-#    yr=[-3.5,4.5]
-#    xr=[3.3,4.25]
-    xr=[min(xdata),max(xdata)]
-    yr=[min(ydata),max(ydata)]
+    yr=[-3.5,4.5]
+    xr=[3.3,4.25]
+#    xr=[min(xdata),max(xdata)]
+#    yr=[min(ydata),max(ydata)]
 
     imf=np.array(data['int_IMF'])
 
@@ -172,25 +172,44 @@ def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=[
     else:
         nbinsY=nbins[0]
 
-    xbinsize=abs(xr[1]-xr[0])/nbinsX
-    ybinsize=abs(yr[1]-yr[0])/nbinsY
+    xbinsize=(xr[1]-xr[0])/nbinsX
+    ybinsize=(yr[1]-yr[0])/nbinsY
 
-    ximage=np.floor((xdata-min(xdata))/xbinsize).astype('int')
-    yimage=np.floor((ydata-min(ydata))/ybinsize).astype('int')
+    ximage=((xdata-xr[0])/xbinsize).astype('int')
+    yimage=((ydata-yr[0])/ybinsize).astype('int')
 
-    hess=np.zeros([nbinsX+1,nbinsY+1])
+    hess=np.zeros([nbinsX,nbinsY])
 
     for i in range(len(ximage)-1):
         nstars=(imf[i+1]-imf[i])*m_tot
-        for ix in range(min(ximage[i],ximage[i+1]),max(ximage[i],ximage[i+1])+1):
-            for iy in range(min(yimage[i],yimage[i+1]),max(yimage[i],yimage[i+1])+1):
-                hess[ix,iy]+=nstars/(nbinsX*nbinsY)
+
+        xmin=min(ximage[i:i+2])
+        xmax=max(ximage[i:i+2])
+        ymin=min(yimage[i:i+2])
+        ymax=max(yimage[i:i+2])
+
+        if ymax > 0 and xmax > 0 and ymin < nbinsY-1 and xmin < nbinsX-1:
+            nbin=(xmax-xmin+1)*(ymax-ymin+1)
+
+            xmin=max([xmin,0])
+            xmax=min([xmax,nbinsX-1])
+            ymin=max([ymin,0])
+            ymax=min([ymax,nbinsY-1])
+
+            hess[ymin:ymax+1,xmin:xmax+1]+=nstars/nbin
+
+
+#        for ix in range(min(ximage[i],ximage[i+1]),max(ximage[i],ximage[i+1])+1):
+#            for iy in range(min(yimage[i],yimage[i+1]),max(yimage[i],yimage[i+1])+1):
+#                hess[ix,iy]+=nstars/(nbinsX*nbinsY)
 
     fig=plt.subplots(1,1,figsize=(10, 10))
     matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
-    im=plt.imshow(hess.T,interpolation='none',extent=(xr[0],xr[1],yr[0],yr[1]),aspect='auto',cmap='jet',origin='lower')
+    im=plt.imshow(hess,interpolation='none',extent=(xr[0],xr[1],yr[0],yr[1]),aspect='auto',cmap='bone_r',origin='lower')
+    ax = plt.gca()
+    ax.invert_xaxis()
     cb=plt.colorbar(im)
-    plt.scatter(xdata,ydata)
+    plt.scatter(xdata,ydata,marker='o',color='white',s=2)
     msunstr=r'$\rm M_{tot} = '+str(m_tot)+' M_{\odot}$'
     plt.title(str(age)+' GYr,  [M/H] = '+feh+',  '+msunstr)
     plt.xlabel(r'Log $\rm T_{eff}$')
@@ -206,53 +225,5 @@ def plot_hess(infile='zp00.dat',age=8.0,plotfile=None,fitsfile=None,quantities=[
         hdu.writeto(fitsfile)
 
     return hess
-
-def imf_random_deviates(npts=1000,plotfile=None):
-    # mass limits
-    minM=0.5
-    maxM=100.0
-    # exponent of the IMF
-    expo=-2.35
-
-    # create the random deviates and an empty mass array
-    rand=np.random.uniform(0,1,npts)
-    m=np.zeros(npts)
-
-    # calculate the normalization constant by integrating
-    # and setting the result equal to 1.
-    # On paper, I get const=0.5300091178
-    tmp=expo+1.0
-    const=abs(tmp)/((minM**tmp)-(maxM**tmp))
-
-    # loop over the random deviates and calculate masses based 
-    # the inverted integral set equal to the random deviates.
-    # i.e. m[i]=(-1.35X/const + 0.5^-1.35)^(1/-1.35)
-    for i in range(npts):
-        m[i]=(((tmp*rand[i])/const)+(0.5**tmp))**(1.0/tmp)
-
-    x=np.arange(minM,maxM,1./npts)
-
-    fig, (ax0,ax1) = plt.subplots(nrows=2,figsize=(10, 10))
-    p0=ax0.hist(m,bins=npts)
-    ax0.plot(x,x**(-2.35),linewidth=3)
-    ax0.set_ylabel('N')
-    ax0.set_xlim([minM,maxM])
-#    ax0.set_xticks([])
-    ax0.set_title(str(npts)+' random deviates')
-
-    p1=ax1.hist(m,bins=npts,log=True)
-#    ax1.plot(x,np.log10(x**(-2.35)),linewidth=3)
-    ax1.set_ylabel('N')
-    ax1.set_xlabel(r'$\rm M_{\odot}$')
-    ax1.set_xlim([minM,maxM])
-
-    matplotlib.rcParams.update({'font.size': 16, 'font.family':'serif'})
-    plt.tight_layout() 
-
-    if plotfile is not None:
-        plt.savefig(plotfile)
-
-    return m
-
 
 

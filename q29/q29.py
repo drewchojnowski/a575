@@ -17,9 +17,8 @@ def imf_random_deviates(npts=1000,plotfile=None):
     # exponent of the IMF
     expo=-2.35
 
-    # create the random deviates and an empty mass array
+    # create the random deviates
     rand=np.random.uniform(0,1,npts)
-    m=np.zeros(npts)
 
     # calculate the normalization constant by integrating
     # and setting the result equal to 1.
@@ -27,11 +26,10 @@ def imf_random_deviates(npts=1000,plotfile=None):
     tmp=expo+1.0
     const=abs(tmp)/((minM**tmp)-(maxM**tmp))
 
-    # loop over the random deviates and calculate masses based 
-    # the inverted integral set equal to the random deviates.
+    # calculate masses based the inverted integral set equal 
+    # to the random deviates.
     # i.e. m[i]=(-1.35X/const + 0.5^-1.35)^(1/-1.35)
-    for i in range(npts):
-        m[i]=(((tmp*rand[i])/const)+(0.5**tmp))**(1.0/tmp)
+    m=(((tmp*rand)/const)+(0.5**tmp))**(1.0/tmp)
 
     x=np.arange(minM,maxM,1./npts)
 
